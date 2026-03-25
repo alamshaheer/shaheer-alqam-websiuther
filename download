@@ -1,0 +1,736 @@
+import { useState, useEffect, useRef } from "react";
+
+// ─── Language Data ───
+const LANGS = {
+  en: {
+    label: "EN",
+    nav: { home: "Home", shop: "Shop", about: "About Us" },
+    hero: {
+      tagline: "Power Your Journey",
+      headline: "Kinetic Energy\nHarvesting Backpacks",
+      sub: "Convert every step into clean, renewable energy. Charge your devices on the go — powered by you.",
+      cta: "Shop Now",
+    },
+    features: {
+      title: "Why Kinetic?",
+      items: [
+        { icon: "⚡", title: "Harvest Motion", desc: "Our patented kinetic module converts your natural movement into stored electrical energy." },
+        { icon: "🔋", title: "Charge Anything", desc: "USB-C & USB-A ports deliver up to 10W — enough for phones, earbuds, and tablets." },
+        { icon: "🌱", title: "Zero Emissions", desc: "No batteries to dispose of. No grid power needed. Just you, moving through the world." },
+        { icon: "🎒", title: "Comfort First", desc: "Ergonomic design with adjustable straps and breathable mesh — built for all-day wear." },
+      ],
+    },
+    stats: {
+      items: [
+        { value: "10W", label: "Max Output" },
+        { value: "3hrs", label: "Full Phone Charge" },
+        { value: "0g", label: "CO₂ Emissions" },
+        { value: "25L", label: "Capacity" },
+      ],
+    },
+    shop: {
+      title: "Our Collection",
+      sub: "Every pack harvests your kinetic energy. Pick the one that fits your life.",
+      products: [
+        { name: "Trail Volt", price: "$189", tag: "Best Seller", desc: "Rugged 30L pack for hikers and trail runners. Weatherproof kinetic module." },
+        { name: "Urban Pulse", price: "$149", tag: "New", desc: "Sleek 20L daily commuter. Slim profile, maximum energy capture." },
+        { name: "Expedition Core", price: "$249", tag: "Pro", desc: "45L expedition-grade. Dual kinetic modules for double the power output." },
+        { name: "Mini Spark", price: "$99", tag: "Compact", desc: "15L daypack. Perfect for students and light travelers." },
+        { name: "Voyager X", price: "$299", tag: "Premium", desc: "40L travel pack with integrated solar + kinetic hybrid charging system." },
+        { name: "Sprint Charge", price: "$169", tag: "Sport", desc: "Lightweight 18L sports pack optimized for running and cycling motion." },
+      ],
+      addToCart: "Add to Cart",
+    },
+    about: {
+      title: "About KineticPack",
+      story: {
+        heading: "Our Story",
+        p1: "Founded in 2023 by a team of renewable energy engineers and outdoor enthusiasts, KineticPack was born from a simple question: what if every step you take could power your life?",
+        p2: "We spent two years developing our proprietary Kinetic Harvest Module — a compact, lightweight generator that converts the natural motion of walking, running, and hiking into clean electrical energy.",
+        p3: "Today, we're a team of 40+ innovators based in Brooklyn, New York, committed to making personal renewable energy accessible to everyone.",
+      },
+      mission: {
+        heading: "Our Mission",
+        text: "To eliminate the need for disposable batteries and grid-dependent charging by putting the power of clean energy literally on your back.",
+      },
+      values: {
+        heading: "Our Values",
+        items: [
+          { icon: "🌍", title: "Sustainability", desc: "Every product decision starts with environmental impact." },
+          { icon: "🔬", title: "Innovation", desc: "We push the boundaries of personal energy harvesting." },
+          { icon: "🤝", title: "Community", desc: "We build for people, not just consumers." },
+          { icon: "✊", title: "Accessibility", desc: "Clean energy should be for everyone, everywhere." },
+        ],
+      },
+      team: {
+        heading: "Leadership",
+        members: [
+          { name: "Maya Chen", role: "CEO & Co-Founder" },
+          { name: "James Okafor", role: "CTO & Co-Founder" },
+          { name: "Lena Petrova", role: "Head of Design" },
+        ],
+      },
+    },
+    footer: {
+      tagline: "Move. Generate. Power.",
+      copy: "© 2026 KineticPack. All rights reserved.",
+    },
+    editMode: "Edit Mode",
+  },
+  es: {
+    label: "ES",
+    nav: { home: "Inicio", shop: "Tienda", about: "Nosotros" },
+    hero: {
+      tagline: "Impulsa Tu Viaje",
+      headline: "Mochilas de Cosecha\nde Energía Cinética",
+      sub: "Convierte cada paso en energía limpia y renovable. Carga tus dispositivos en movimiento.",
+      cta: "Comprar",
+    },
+    features: {
+      title: "¿Por Qué Cinética?",
+      items: [
+        { icon: "⚡", title: "Cosecha Movimiento", desc: "Nuestro módulo cinético patentado convierte tu movimiento natural en energía eléctrica almacenada." },
+        { icon: "🔋", title: "Carga Todo", desc: "Puertos USB-C y USB-A entregan hasta 10W — suficiente para teléfonos, auriculares y tabletas." },
+        { icon: "🌱", title: "Cero Emisiones", desc: "Sin baterías desechables. Sin red eléctrica. Solo tú, moviéndote por el mundo." },
+        { icon: "🎒", title: "Comodidad Primero", desc: "Diseño ergonómico con correas ajustables y malla transpirable — hecho para usar todo el día." },
+      ],
+    },
+    stats: {
+      items: [
+        { value: "10W", label: "Salida Máx." },
+        { value: "3hrs", label: "Carga Completa" },
+        { value: "0g", label: "Emisiones CO₂" },
+        { value: "25L", label: "Capacidad" },
+      ],
+    },
+    shop: {
+      title: "Nuestra Colección",
+      sub: "Cada mochila cosecha tu energía cinética. Elige la que se adapte a tu vida.",
+      products: [
+        { name: "Trail Volt", price: "$189", tag: "Más Vendido", desc: "Mochila robusta de 30L para senderistas. Módulo cinético resistente." },
+        { name: "Urban Pulse", price: "$149", tag: "Nuevo", desc: "Elegante mochila de 20L para el día a día. Perfil delgado, máxima captura." },
+        { name: "Expedition Core", price: "$249", tag: "Pro", desc: "45L de grado expedición. Módulos cinéticos dobles para doble potencia." },
+        { name: "Mini Spark", price: "$99", tag: "Compacta", desc: "Mochila de 15L. Perfecta para estudiantes y viajeros ligeros." },
+        { name: "Voyager X", price: "$299", tag: "Premium", desc: "40L con sistema híbrido solar + cinético integrado." },
+        { name: "Sprint Charge", price: "$169", tag: "Deporte", desc: "18L ligera optimizada para correr y ciclismo." },
+      ],
+      addToCart: "Agregar",
+    },
+    about: {
+      title: "Sobre KineticPack",
+      story: {
+        heading: "Nuestra Historia",
+        p1: "Fundada en 2023 por un equipo de ingenieros de energía renovable y entusiastas del aire libre, KineticPack nació de una pregunta simple: ¿y si cada paso que das pudiera alimentar tu vida?",
+        p2: "Pasamos dos años desarrollando nuestro Módulo de Cosecha Cinética — un generador compacto y ligero que convierte el movimiento natural en energía eléctrica limpia.",
+        p3: "Hoy, somos un equipo de más de 40 innovadores con sede en Brooklyn, Nueva York, comprometidos a hacer que la energía renovable personal sea accesible para todos.",
+      },
+      mission: {
+        heading: "Nuestra Misión",
+        text: "Eliminar la necesidad de baterías desechables poniendo el poder de la energía limpia literalmente en tu espalda.",
+      },
+      values: {
+        heading: "Nuestros Valores",
+        items: [
+          { icon: "🌍", title: "Sostenibilidad", desc: "Cada decisión de producto comienza con el impacto ambiental." },
+          { icon: "🔬", title: "Innovación", desc: "Empujamos los límites de la cosecha de energía personal." },
+          { icon: "🤝", title: "Comunidad", desc: "Construimos para personas, no solo consumidores." },
+          { icon: "✊", title: "Accesibilidad", desc: "La energía limpia debe ser para todos, en todas partes." },
+        ],
+      },
+      team: {
+        heading: "Liderazgo",
+        members: [
+          { name: "Maya Chen", role: "CEO y Cofundadora" },
+          { name: "James Okafor", role: "CTO y Cofundador" },
+          { name: "Lena Petrova", role: "Directora de Diseño" },
+        ],
+      },
+    },
+    footer: {
+      tagline: "Muévete. Genera. Potencia.",
+      copy: "© 2026 KineticPack. Todos los derechos reservados.",
+    },
+    editMode: "Modo Edición",
+  },
+  fr: {
+    label: "FR",
+    nav: { home: "Accueil", shop: "Boutique", about: "À Propos" },
+    hero: {
+      tagline: "Alimentez Votre Voyage",
+      headline: "Sacs à Dos à\nRécolte d'Énergie",
+      sub: "Convertissez chaque pas en énergie propre et renouvelable. Rechargez vos appareils en mouvement.",
+      cta: "Acheter",
+    },
+    features: {
+      title: "Pourquoi Cinétique?",
+      items: [
+        { icon: "⚡", title: "Récoltez le Mouvement", desc: "Notre module cinétique breveté convertit votre mouvement naturel en énergie électrique stockée." },
+        { icon: "🔋", title: "Chargez Tout", desc: "Ports USB-C et USB-A délivrant jusqu'à 10W — suffisant pour téléphones et tablettes." },
+        { icon: "🌱", title: "Zéro Émissions", desc: "Pas de piles jetables. Pas de réseau électrique. Juste vous, en mouvement." },
+        { icon: "🎒", title: "Confort D'abord", desc: "Design ergonomique avec bretelles ajustables et maille respirante." },
+      ],
+    },
+    stats: {
+      items: [
+        { value: "10W", label: "Sortie Max" },
+        { value: "3hrs", label: "Charge Complète" },
+        { value: "0g", label: "Émissions CO₂" },
+        { value: "25L", label: "Capacité" },
+      ],
+    },
+    shop: {
+      title: "Notre Collection",
+      sub: "Chaque sac récolte votre énergie cinétique. Choisissez celui qui vous convient.",
+      products: [
+        { name: "Trail Volt", price: "189€", tag: "Populaire", desc: "Sac robuste 30L pour randonneurs. Module cinétique étanche." },
+        { name: "Urban Pulse", price: "149€", tag: "Nouveau", desc: "Sac élégant 20L pour le quotidien. Profil mince, capture maximale." },
+        { name: "Expedition Core", price: "249€", tag: "Pro", desc: "45L de qualité expédition. Double modules cinétiques." },
+        { name: "Mini Spark", price: "99€", tag: "Compact", desc: "Sac 15L. Parfait pour étudiants et voyageurs légers." },
+        { name: "Voyager X", price: "299€", tag: "Premium", desc: "40L avec système hybride solaire + cinétique intégré." },
+        { name: "Sprint Charge", price: "169€", tag: "Sport", desc: "18L léger optimisé pour la course et le cyclisme." },
+      ],
+      addToCart: "Ajouter",
+    },
+    about: {
+      title: "À Propos de KineticPack",
+      story: {
+        heading: "Notre Histoire",
+        p1: "Fondée en 2023 par une équipe d'ingénieurs en énergie renouvelable et de passionnés de plein air, KineticPack est née d'une question simple : et si chaque pas pouvait alimenter votre vie?",
+        p2: "Nous avons passé deux ans à développer notre Module de Récolte Cinétique — un générateur compact qui convertit le mouvement naturel en énergie électrique propre.",
+        p3: "Aujourd'hui, nous sommes une équipe de plus de 40 innovateurs basés à Brooklyn, New York.",
+      },
+      mission: {
+        heading: "Notre Mission",
+        text: "Éliminer le besoin de piles jetables en mettant le pouvoir de l'énergie propre littéralement sur votre dos.",
+      },
+      values: {
+        heading: "Nos Valeurs",
+        items: [
+          { icon: "🌍", title: "Durabilité", desc: "Chaque décision produit commence par l'impact environnemental." },
+          { icon: "🔬", title: "Innovation", desc: "Nous repoussons les limites de la récolte d'énergie personnelle." },
+          { icon: "🤝", title: "Communauté", desc: "Nous construisons pour les gens, pas seulement les consommateurs." },
+          { icon: "✊", title: "Accessibilité", desc: "L'énergie propre devrait être pour tous, partout." },
+        ],
+      },
+      team: {
+        heading: "Direction",
+        members: [
+          { name: "Maya Chen", role: "PDG et Cofondatrice" },
+          { name: "James Okafor", role: "CTO et Cofondateur" },
+          { name: "Lena Petrova", role: "Directrice du Design" },
+        ],
+      },
+    },
+    footer: {
+      tagline: "Bougez. Générez. Alimentez.",
+      copy: "© 2026 KineticPack. Tous droits réservés.",
+    },
+    editMode: "Mode Édition",
+  },
+};
+
+// ─── Editable Text Component ───
+function Editable({ text, tag = "span", className = "", style = {}, editMode }) {
+  const [value, setValue] = useState(text);
+  const ref = useRef(null);
+
+  useEffect(() => { setValue(text); }, [text]);
+
+  const Tag = tag;
+  if (!editMode) {
+    return <Tag className={className} style={style}>{value}</Tag>;
+  }
+  return (
+    <Tag
+      ref={ref}
+      className={className}
+      style={{
+        ...style,
+        outline: "2px dashed rgba(255,140,0,0.5)",
+        outlineOffset: "3px",
+        cursor: "text",
+        borderRadius: "4px",
+        minWidth: "20px",
+        minHeight: "1em",
+      }}
+      contentEditable
+      suppressContentEditableWarning
+      onBlur={(e) => setValue(e.target.innerText)}
+    >
+      {value}
+    </Tag>
+  );
+}
+
+// ─── Placeholder Backpack SVG ───
+function BackpackPlaceholder({ size = 220, color = "#d4610a" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="50" y="55" width="100" height="120" rx="18" fill={color} opacity="0.85" />
+      <rect x="60" y="65" width="80" height="50" rx="10" fill="#fff" opacity="0.18" />
+      <rect x="70" y="30" width="60" height="35" rx="12" fill={color} opacity="0.65" />
+      <rect x="85" y="130" width="30" height="18" rx="5" fill="#fff" opacity="0.22" />
+      <circle cx="100" cy="139" r="4" fill="#fff" opacity="0.45" />
+      <rect x="62" y="160" width="12" height="22" rx="4" fill={color} opacity="0.55" />
+      <rect x="126" y="160" width="12" height="22" rx="4" fill={color} opacity="0.55" />
+      <path d="M78 55 Q78 25 100 25 Q122 25 122 55" stroke={color} strokeWidth="5" fill="none" opacity="0.5" />
+      <circle cx="145" cy="100" r="14" fill="#fbbf24" opacity="0.7" />
+      <path d="M141 100 L144 103 L150 97" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// ─── Animated bolt icon for hero ───
+function BoltIcon() {
+  return (
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" style={{ display: "inline-block", verticalAlign: "middle", marginRight: 8 }}>
+      <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" fill="#fbbf24" stroke="#b45309" strokeWidth="1" />
+    </svg>
+  );
+}
+
+// ─── Main App ───
+export default function KineticPackSite() {
+  const [page, setPage] = useState("home");
+  const [lang, setLang] = useState("en");
+  const [editMode, setEditMode] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const [mobileNav, setMobileNav] = useState(false);
+  const t = LANGS[lang];
+
+  const oranges = {
+    deep: "#b45309",
+    primary: "#d4610a",
+    warm: "#e8790f",
+    light: "#f59e0b",
+    pale: "#fef3c7",
+    cream: "#fffbeb",
+    dark: "#7c2d12",
+    bg: "#1a0e04",
+    card: "rgba(180,83,9,0.10)",
+  };
+
+  const sectionStyle = (idx) => ({
+    background: idx % 2 === 0 ? oranges.cream : "#fff",
+    borderLeft: `5px solid ${idx % 2 === 0 ? oranges.primary : oranges.light}`,
+    padding: "64px 0",
+  });
+
+  return (
+    <div style={{
+      fontFamily: "'Source Sans 3', 'Source Sans Pro', sans-serif",
+      color: oranges.dark,
+      background: oranges.cream,
+      minHeight: "100vh",
+      position: "relative",
+    }}>
+      <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+
+      <style>{`
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.06); } }
+        @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+        .fade-up { animation: fadeUp 0.7s ease both; }
+        .fade-up-d1 { animation: fadeUp 0.7s 0.1s ease both; }
+        .fade-up-d2 { animation: fadeUp 0.7s 0.2s ease both; }
+        .fade-up-d3 { animation: fadeUp 0.7s 0.3s ease both; }
+        .fade-up-d4 { animation: fadeUp 0.7s 0.4s ease both; }
+        .btn-primary {
+          background: linear-gradient(135deg, ${oranges.primary}, ${oranges.warm});
+          color: #fff; border: none; padding: 14px 36px; border-radius: 50px;
+          font-size: 16px; font-weight: 700; cursor: pointer; letter-spacing: 0.5px;
+          transition: all 0.3s; box-shadow: 0 4px 20px rgba(212,97,10,0.35);
+          font-family: inherit;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(212,97,10,0.5); }
+        .nav-link {
+          color: ${oranges.dark}; text-decoration: none; font-weight: 600; font-size: 15px;
+          padding: 8px 16px; border-radius: 8px; transition: all 0.25s; cursor: pointer;
+          border: none; background: none; font-family: inherit;
+        }
+        .nav-link:hover, .nav-link-active { background: rgba(212,97,10,0.12); color: ${oranges.primary}; }
+        .product-card {
+          background: #fff; border-radius: 16px; overflow: hidden;
+          box-shadow: 0 2px 16px rgba(124,45,18,0.07); transition: all 0.35s; cursor: pointer;
+          border: 1px solid rgba(212,97,10,0.1);
+        }
+        .product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 36px rgba(212,97,10,0.15); }
+        .vert-line { width: 4px; background: linear-gradient(to bottom, ${oranges.light}, ${oranges.primary}, ${oranges.deep}); border-radius: 2px; }
+        .shimmer-bg {
+          background: linear-gradient(90deg, rgba(212,97,10,0.04) 0%, rgba(245,158,11,0.12) 50%, rgba(212,97,10,0.04) 100%);
+          background-size: 800px 100%; animation: shimmer 3s linear infinite;
+        }
+        .lang-dropdown { position: relative; display: inline-block; }
+        .lang-btn {
+          background: rgba(212,97,10,0.1); border: 1.5px solid rgba(212,97,10,0.25);
+          color: ${oranges.deep}; padding: 6px 14px; border-radius: 8px; font-weight: 700;
+          font-size: 13px; cursor: pointer; font-family: inherit; transition: all 0.2s;
+        }
+        .lang-btn:hover { background: rgba(212,97,10,0.2); }
+        .lang-menu {
+          position: absolute; top: 110%; right: 0; background: #fff; border-radius: 10px;
+          box-shadow: 0 8px 30px rgba(124,45,18,0.15); overflow: hidden; z-index: 100;
+          min-width: 80px; border: 1px solid rgba(212,97,10,0.12);
+        }
+        .lang-option {
+          display: block; width: 100%; padding: 10px 18px; border: none; background: none;
+          text-align: left; font-weight: 600; font-size: 14px; cursor: pointer; font-family: inherit;
+          color: ${oranges.dark}; transition: background 0.15s;
+        }
+        .lang-option:hover { background: ${oranges.pale}; }
+        .edit-toggle {
+          display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+          color: ${oranges.deep}; cursor: pointer; user-select: none;
+        }
+        .edit-switch {
+          width: 40px; height: 22px; border-radius: 11px; position: relative; transition: background 0.3s; cursor: pointer;
+        }
+        .edit-switch::after {
+          content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px;
+          border-radius: 50%; background: #fff; transition: transform 0.3s; box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+        }
+        .edit-switch-on { background: ${oranges.primary}; }
+        .edit-switch-on::after { transform: translateX(18px); }
+        .edit-switch-off { background: #ccc; }
+        @media (max-width: 768px) {
+          .desktop-nav { display: none !important; }
+          .mobile-toggle { display: flex !important; }
+        }
+        @media (min-width: 769px) {
+          .mobile-toggle { display: none !important; }
+          .mobile-menu { display: none !important; }
+        }
+      `}</style>
+
+      {/* ─── NAVBAR ─── */}
+      <nav style={{
+        position: "sticky", top: 0, zIndex: 50, background: "rgba(255,251,235,0.92)",
+        backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(212,97,10,0.1)",
+        padding: "0 24px",
+      }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <BoltIcon />
+            <span style={{ fontWeight: 900, fontSize: 20, color: oranges.deep, letterSpacing: "-0.5px" }}>KineticPack</span>
+          </div>
+          <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            {["home", "shop", "about"].map((p) => (
+              <button key={p} className={`nav-link ${page === p ? "nav-link-active" : ""}`} onClick={() => setPage(p)}>
+                {t.nav[p]}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div className="edit-toggle" onClick={() => setEditMode(!editMode)}>
+              <span>{t.editMode}</span>
+              <div className={`edit-switch ${editMode ? "edit-switch-on" : "edit-switch-off"}`} />
+            </div>
+            <div className="lang-dropdown">
+              <button className="lang-btn" onClick={() => setLangOpen(!langOpen)}>
+                {LANGS[lang].label} ▾
+              </button>
+              {langOpen && (
+                <div className="lang-menu">
+                  {Object.keys(LANGS).map((k) => (
+                    <button key={k} className="lang-option" onClick={() => { setLang(k); setLangOpen(false); }}>
+                      {LANGS[k].label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {cartCount > 0 && (
+              <div style={{ position: "relative", fontSize: 22 }}>
+                🛒
+                <span style={{
+                  position: "absolute", top: -6, right: -10, background: oranges.primary,
+                  color: "#fff", borderRadius: 99, fontSize: 11, fontWeight: 800, width: 20, height: 20,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>{cartCount}</span>
+              </div>
+            )}
+            <button
+              className="mobile-toggle"
+              onClick={() => setMobileNav(!mobileNav)}
+              style={{ display: "none", background: "none", border: "none", fontSize: 26, cursor: "pointer", color: oranges.deep }}
+            >
+              {mobileNav ? "✕" : "☰"}
+            </button>
+          </div>
+        </div>
+        {mobileNav && (
+          <div className="mobile-menu" style={{ padding: "8px 0 16px", display: "flex", flexDirection: "column", gap: 4 }}>
+            {["home", "shop", "about"].map((p) => (
+              <button key={p} className={`nav-link ${page === p ? "nav-link-active" : ""}`}
+                onClick={() => { setPage(p); setMobileNav(false); }}
+                style={{ textAlign: "left" }}
+              >
+                {t.nav[p]}
+              </button>
+            ))}
+          </div>
+        )}
+      </nav>
+
+      {/* ─── PAGES ─── */}
+      <div key={page + lang}>
+        {page === "home" && <HomePage t={t} oranges={oranges} sectionStyle={sectionStyle} editMode={editMode} setPage={setPage} />}
+        {page === "shop" && <ShopPage t={t} oranges={oranges} editMode={editMode} cartCount={cartCount} setCartCount={setCartCount} />}
+        {page === "about" && <AboutPage t={t} oranges={oranges} sectionStyle={sectionStyle} editMode={editMode} />}
+      </div>
+
+      {/* ─── FOOTER ─── */}
+      <footer style={{
+        background: oranges.bg, color: oranges.pale, textAlign: "center", padding: "48px 24px",
+        borderTop: `4px solid ${oranges.primary}`,
+      }}>
+        <Editable text={t.footer.tagline} tag="p" editMode={editMode} style={{ fontSize: 22, fontWeight: 700, marginBottom: 8, color: oranges.light }} />
+        <Editable text={t.footer.copy} tag="p" editMode={editMode} style={{ fontSize: 13, opacity: 0.6 }} />
+      </footer>
+    </div>
+  );
+}
+
+// ─── HOME PAGE ───
+function HomePage({ t, oranges, sectionStyle, editMode, setPage }) {
+  return (
+    <>
+      {/* Hero */}
+      <section style={{
+        ...sectionStyle(0),
+        padding: "80px 24px 72px",
+        background: `linear-gradient(170deg, ${oranges.cream} 0%, ${oranges.pale} 50%, rgba(245,158,11,0.15) 100%)`,
+        borderLeft: `5px solid ${oranges.primary}`,
+        position: "relative", overflow: "hidden",
+      }}>
+        <div style={{
+          position: "absolute", top: -80, right: -80, width: 320, height: 320, borderRadius: "50%",
+          background: `radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 70%)`,
+        }} />
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", flexWrap: "wrap", alignItems: "center", gap: 48 }}>
+          <div style={{ flex: "1 1 400px" }} className="fade-up">
+            <Editable text={t.hero.tagline} tag="p" editMode={editMode} style={{
+              fontSize: 14, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase",
+              color: oranges.primary, marginBottom: 16,
+            }} />
+            <Editable text={t.hero.headline} tag="h1" editMode={editMode} style={{
+              fontSize: "clamp(36px, 5vw, 58px)", fontWeight: 900, lineHeight: 1.08,
+              color: oranges.dark, marginBottom: 20, whiteSpace: "pre-line",
+            }} />
+            <Editable text={t.hero.sub} tag="p" editMode={editMode} style={{
+              fontSize: 18, lineHeight: 1.7, color: "#92400e", maxWidth: 520, marginBottom: 32,
+            }} />
+            <button className="btn-primary" onClick={() => setPage("shop")}>{t.hero.cta}</button>
+          </div>
+          <div style={{ flex: "1 1 280px", display: "flex", justifyContent: "center" }} className="fade-up-d2">
+            <div style={{
+              background: "rgba(212,97,10,0.06)", borderRadius: 28, padding: 32,
+              border: "2px dashed rgba(212,97,10,0.15)",
+            }}>
+              <BackpackPlaceholder size={240} color={oranges.primary} />
+              <p style={{ textAlign: "center", fontSize: 12, color: oranges.warm, marginTop: 8, fontWeight: 600 }}>
+                [ Product Image Placeholder ]
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Bar */}
+      <section style={{
+        background: `linear-gradient(135deg, ${oranges.deep}, ${oranges.primary})`,
+        borderLeft: `5px solid ${oranges.dark}`,
+        padding: "32px 24px",
+      }}>
+        <div style={{
+          maxWidth: 1100, margin: "0 auto", display: "flex", flexWrap: "wrap",
+          justifyContent: "space-around", gap: 24,
+        }}>
+          {t.stats.items.map((s, i) => (
+            <div key={i} className={`fade-up-d${i + 1}`} style={{ textAlign: "center", minWidth: 120 }}>
+              <Editable text={s.value} tag="div" editMode={editMode} style={{ fontSize: 36, fontWeight: 900, color: "#fff" }} />
+              <Editable text={s.label} tag="div" editMode={editMode} style={{ fontSize: 13, fontWeight: 600, color: oranges.pale, marginTop: 4 }} />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features */}
+      <section style={{ ...sectionStyle(1), padding: "72px 24px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 48 }}>
+            <div className="vert-line" style={{ height: 48 }} />
+            <Editable text={t.features.title} tag="h2" editMode={editMode} style={{
+              fontSize: 36, fontWeight: 900, color: oranges.deep,
+            }} />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 28 }}>
+            {t.features.items.map((f, i) => (
+              <div key={i} className={`fade-up-d${i + 1}`} style={{
+                background: oranges.cream, borderRadius: 16, padding: "32px 24px",
+                borderLeft: `4px solid ${oranges.light}`, transition: "transform 0.3s",
+              }}>
+                <div style={{ fontSize: 36, marginBottom: 12 }}>{f.icon}</div>
+                <Editable text={f.title} tag="h3" editMode={editMode} style={{ fontSize: 18, fontWeight: 800, color: oranges.deep, marginBottom: 8 }} />
+                <Editable text={f.desc} tag="p" editMode={editMode} style={{ fontSize: 14, lineHeight: 1.7, color: "#92400e" }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA banner */}
+      <section className="shimmer-bg" style={{
+        borderLeft: `5px solid ${oranges.warm}`, padding: "56px 24px", textAlign: "center",
+      }}>
+        <div style={{ maxWidth: 600, margin: "0 auto" }} className="fade-up">
+          <Editable text="Ready to Power Your Adventures?" tag="h2" editMode={editMode} style={{
+            fontSize: 32, fontWeight: 900, color: oranges.deep, marginBottom: 16,
+          }} />
+          <Editable text="Join thousands who have made the switch to kinetic-powered living." tag="p" editMode={editMode} style={{
+            fontSize: 16, color: "#92400e", marginBottom: 28,
+          }} />
+          <button className="btn-primary" onClick={() => setPage("shop")}>{t.hero.cta}</button>
+        </div>
+      </section>
+    </>
+  );
+}
+
+// ─── SHOP PAGE ───
+function ShopPage({ t, oranges, editMode, cartCount, setCartCount }) {
+  return (
+    <section style={{ padding: "56px 24px 80px", background: oranges.cream, borderLeft: `5px solid ${oranges.light}` }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
+          <div className="vert-line" style={{ height: 48 }} />
+          <Editable text={t.shop.title} tag="h2" editMode={editMode} style={{ fontSize: 38, fontWeight: 900, color: oranges.deep }} />
+        </div>
+        <Editable text={t.shop.sub} tag="p" editMode={editMode} className="fade-up" style={{
+          fontSize: 16, color: "#92400e", marginBottom: 40, marginLeft: 20, maxWidth: 550,
+        }} />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 28 }}>
+          {t.shop.products.map((p, i) => (
+            <div key={i} className={`product-card fade-up-d${(i % 4) + 1}`}>
+              <div style={{
+                background: `linear-gradient(135deg, rgba(212,97,10,0.08), rgba(245,158,11,0.12))`,
+                padding: 32, display: "flex", justifyContent: "center", alignItems: "center",
+                position: "relative",
+              }}>
+                <span style={{
+                  position: "absolute", top: 12, left: 12, background: oranges.primary,
+                  color: "#fff", padding: "4px 12px", borderRadius: 20, fontSize: 11, fontWeight: 800,
+                }}>
+                  {p.tag}
+                </span>
+                <BackpackPlaceholder size={140} color={oranges.warm} />
+              </div>
+              <div style={{ padding: "20px 24px 24px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                  <Editable text={p.name} tag="h3" editMode={editMode} style={{ fontSize: 20, fontWeight: 800, color: oranges.deep }} />
+                  <Editable text={p.price} tag="span" editMode={editMode} style={{ fontSize: 22, fontWeight: 900, color: oranges.primary }} />
+                </div>
+                <Editable text={p.desc} tag="p" editMode={editMode} style={{ fontSize: 14, lineHeight: 1.6, color: "#92400e", marginBottom: 16 }} />
+                <button className="btn-primary" style={{ width: "100%", padding: "12px 0" }}
+                  onClick={() => setCartCount(cartCount + 1)}>
+                  {t.shop.addToCart}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── ABOUT PAGE ───
+function AboutPage({ t, oranges, sectionStyle, editMode }) {
+  const a = t.about;
+  return (
+    <>
+      {/* Story */}
+      <section style={{ ...sectionStyle(0), padding: "72px 24px" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
+            <div className="vert-line" style={{ height: 48 }} />
+            <Editable text={a.title} tag="h1" editMode={editMode} style={{ fontSize: 42, fontWeight: 900, color: oranges.deep }} />
+          </div>
+          <Editable text={a.story.heading} tag="h2" editMode={editMode} className="fade-up" style={{
+            fontSize: 26, fontWeight: 800, color: oranges.primary, marginBottom: 20,
+          }} />
+          {[a.story.p1, a.story.p2, a.story.p3].map((p, i) => (
+            <Editable key={i} text={p} tag="p" editMode={editMode} className={`fade-up-d${i + 1}`} style={{
+              fontSize: 16, lineHeight: 1.85, color: "#78350f", marginBottom: 18,
+            }} />
+          ))}
+        </div>
+      </section>
+
+      {/* Mission */}
+      <section style={{
+        background: `linear-gradient(135deg, ${oranges.deep}, ${oranges.primary})`,
+        borderLeft: `5px solid ${oranges.dark}`, padding: "56px 24px", textAlign: "center",
+      }}>
+        <div style={{ maxWidth: 700, margin: "0 auto" }} className="fade-up">
+          <Editable text={a.mission.heading} tag="h2" editMode={editMode} style={{ fontSize: 30, fontWeight: 900, color: "#fff", marginBottom: 16 }} />
+          <Editable text={a.mission.text} tag="p" editMode={editMode} style={{ fontSize: 18, lineHeight: 1.8, color: oranges.pale }} />
+        </div>
+      </section>
+
+      {/* Values */}
+      <section style={{ ...sectionStyle(1), padding: "72px 24px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 40 }}>
+            <div className="vert-line" style={{ height: 40 }} />
+            <Editable text={a.values.heading} tag="h2" editMode={editMode} style={{ fontSize: 30, fontWeight: 900, color: oranges.deep }} />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 24 }}>
+            {a.values.items.map((v, i) => (
+              <div key={i} className={`fade-up-d${i + 1}`} style={{
+                background: oranges.cream, borderRadius: 16, padding: "28px 24px",
+                borderLeft: `4px solid ${oranges.light}`,
+              }}>
+                <div style={{ fontSize: 32, marginBottom: 10 }}>{v.icon}</div>
+                <Editable text={v.title} tag="h3" editMode={editMode} style={{ fontSize: 17, fontWeight: 800, color: oranges.deep, marginBottom: 6 }} />
+                <Editable text={v.desc} tag="p" editMode={editMode} style={{ fontSize: 14, lineHeight: 1.7, color: "#92400e" }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Team */}
+      <section style={{ ...sectionStyle(0), padding: "64px 24px" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 36 }}>
+            <div className="vert-line" style={{ height: 40 }} />
+            <Editable text={a.team.heading} tag="h2" editMode={editMode} style={{ fontSize: 30, fontWeight: 900, color: oranges.deep }} />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 24 }}>
+            {a.team.members.map((m, i) => (
+              <div key={i} className={`fade-up-d${i + 1}`} style={{
+                background: "#fff", borderRadius: 16, padding: 28, textAlign: "center",
+                borderBottom: `4px solid ${oranges.light}`,
+                boxShadow: "0 2px 12px rgba(124,45,18,0.06)",
+              }}>
+                <div style={{
+                  width: 72, height: 72, borderRadius: "50%", margin: "0 auto 16px",
+                  background: `linear-gradient(135deg, ${oranges.pale}, rgba(245,158,11,0.3))`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 28, fontWeight: 900, color: oranges.primary,
+                }}>
+                  {m.name.split(" ").map(n => n[0]).join("")}
+                </div>
+                <Editable text={m.name} tag="h3" editMode={editMode} style={{ fontSize: 17, fontWeight: 800, color: oranges.deep, marginBottom: 4 }} />
+                <Editable text={m.role} tag="p" editMode={editMode} style={{ fontSize: 13, color: "#92400e" }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}

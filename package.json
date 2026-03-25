@@ -1,0 +1,18 @@
+# KineticPack Website
+
+A website for kinetic energy harvesting backpacks. Built with React + Vite.
+
+## How to Run Locally
+
+```bash
+npm install
+npm run dev
+```
+
+## How to Deploy to GitHub Pages
+
+```bash
+npm run deploy
+```
+
+Your site will be live at: `https://YOUR-USERNAME.github.io/kineticpack-site/`
