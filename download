@@ -37,7 +37,7 @@ const LANGS = {
         { name: "Expedition Core", price: "$249", tag: "Pro", desc: "45L expedition-grade. Dual kinetic modules for double the power output." },
         { name: "Mini Spark", price: "$99", tag: "Compact", desc: "15L daypack. Perfect for students and light travelers." },
         { name: "Voyager X", price: "$299", tag: "Premium", desc: "40L travel pack with integrated solar + kinetic hybrid charging system." },
-        { name: "Sprint Charge", price: "$169", tag: "Sport", desc: "Lightweight 18L sports pack optimized for running and cycling motion." },
+        { name: "Kinetic Pack", price: "$685", tag: "Sport", desc: "Lightweight 18L sports pack optimized for running and cycling motion." },
       ],
       addToCart: "Add to Cart",
     },
